@@ -9,6 +9,8 @@ from video import Video
 from hyperlapse import SemanticHyperlapse, InputError
 import threading, sys
 
+#TODO: Transform the main menu into a new class
+
 def AddLog(logText, text, textType):
 	logText.configure(state='normal')
 	logText.insert("end", text, textType)
@@ -28,17 +30,24 @@ def CreateLogWindow():
 	log.title("Semantic Hyperlapse Status")
 	return text
 
-def PreProcessAndRun(hyperlapse, inputSpeedUp, alphaInput, betaInput, gamaInput, etaInput, errorLabel):
+def PreProcess(hyperlapse, inputSpeedUp, alphaInput, betaInput, gamaInput, etaInput):
 	speed = inputSpeedUp.get()
-	try:
-		alpha = [a.get() for a in alphaInput]
-		beta = [b.get() for b in betaInput]
-		gama = [g.get() for g in gamaInput]
-		eta = [e.get() for e in etaInput]
+		
+	alpha = [a.get() for a in alphaInput]
+	beta = [b.get() for b in betaInput]
+	gama = [g.get() for g in gamaInput]
+	eta = [e.get() for e in etaInput]
 
-		hyperlapse.setup(speed, alpha, beta, gama, eta)
-		text = CreateLogWindow()
-		hyperlapse.run([AddLog, text])
+	hyperlapse.setup(speed, alpha, beta, gama, eta)
+
+def Run(hyperlapse):
+	text = CreateLogWindow()
+	hyperlapse.run([AddLog, text])
+
+def PreProcessAndRun(hyperlapse, inputSpeedUp, alphaInput, betaInput, gamaInput, etaInput, errorLabel):
+	try:
+		PreProcess(hyperlapse, inputSpeedUp, alphaInput, betaInput, gamaInput, etaInput)
+		Run(hyperlapse)
 	except InputError as IE:
 		errorLabel['text'] = IE.msg
 		errorLabel.grid(row=7, columnspan=3)

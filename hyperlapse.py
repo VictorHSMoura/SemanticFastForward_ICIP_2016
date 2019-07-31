@@ -39,12 +39,10 @@ class SemanticHyperlapse(object):
 		if self.isEmpty(velocity):
 			raise InputError("Please insert speedup first")
 		try:
-			velocity = float(int(velocity))
-			if velocity <= 1:
-				raise InputError("Error: speedup <= 1")
-			self.velocity = velocity
+			self.checkAndSetVelocity(velocity)
 		except ValueError:
 			raise InputError("Invalid speedup value")
+			
 	def getMaxVel(self):
 		return self.maxVel
 
@@ -85,6 +83,12 @@ class SemanticHyperlapse(object):
 		self.setPath(os.getcwd()) #get project path 
 		self.video.setPaths()
 
+	def checkAndSetVelocity(self, velocity):
+		velocity = float(int(velocity))
+		if velocity <= 1:
+			raise InputError("Error: speedup <= 1")
+		self.velocity = velocity
+	
 	def isEmpty(self, inputText):
 		if inputText == "":
 			return True
