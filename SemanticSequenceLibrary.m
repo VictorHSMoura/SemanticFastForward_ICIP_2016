@@ -95,8 +95,18 @@ classdef SemanticSequenceLibrary
                     startInd = 1;
                     endInd   = 884;
                     fps      = 30;
-                otherwise
-                    error(['ERROR: You have specified a non-existent experiment (' exp_name ')']);
+		case 'Walking75'
+		    filename = 'Walking_75p.MP4';
+		    startInd = 1;
+		    endInd = 15484;
+		    fps = 30;
+		%% Video that will be setted later          
+		otherwise
+			filename = '';
+			startInd = -1;
+			endInd = -1;
+			fps = 0;
+                    %% error(['ERROR: You have specified a non-existent experiment (' exp_name ')']);
             end
             
             videoFile = fullfile(video_dir,filename);
