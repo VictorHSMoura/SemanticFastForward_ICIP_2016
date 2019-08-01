@@ -1,5 +1,5 @@
 ConfigWrapperIncrementalID.mat
-autorun.pyc
-hyperlapse.pyc
-video.pyc
+PythonScripts/autorun.pyc
+PythonScripts/hyperlapse.pyc
+PythonScripts/video.pyc
 .vscode/

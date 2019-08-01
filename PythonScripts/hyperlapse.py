@@ -178,24 +178,23 @@ class SemanticHyperlapse(object):
 		self.setGama(gamaInput)
 		self.setEta(etaInput)
 
-	def run(self, writeStructures):
-		function = writeStructures[0]
-		textArea = writeStructures[1]
+	def run(self, writeFunction):
+		function = writeFunction
 		
-		function(textArea, "Running Optical Flow\n", 'title')
+		function("1/5 - Running Optical Flow\n", 'title')
 		self.runOpticalFlow()
 	
-		function(textArea, "Starting Matlab\n", 'title')
+		function("2/5 - Starting Matlab\n", 'title')
 		eng = matlab.engine.start_matlab("-nodisplay")
 	
-		function(textArea, "Getting Semantic Info\n", 'title')
+		function("3/5 - Getting Semantic Info\n", 'title')
 		(tns, ts) = self.getSemanticInfo(eng)
 
-		function(textArea, "Speeding-Up Video\n", 'title')
+		function("4/5 - Speeding-Up Video\n", 'title')
 		self.speedUp(eng, tns, ts)
 		eng.quit()
 	
-		function(textArea, "Finished\n", 'title')
+		function("5/5 - Finished\n", 'title')
 
 	def correctPath(self, path):
 		splittedPath = path.split(' ')
