@@ -90,12 +90,21 @@ class TestVideo(unittest.TestCase):
 
     def testFile(self):
         self.assertEqual(self.video.getVideoFile(), '/home/victorhugomoura/Documents/example.mp4')
+        self.video.setVideoFile('/home/victorhugomoura/Documents/example2.mp4')
+        self.assertNotEqual(self.video.getVideoFile(), '/home/victorhugomoura/Documents/example.mp4')
+        self.assertEqual(self.video.getVideoFile(), '/home/victorhugomoura/Documents/example2.mp4')
 
     def testName(self):
         self.assertEqual(self.video.getVideoName(), 'example.mp4')
+        self.video.setVideoFile('/home/victorhugomoura/Documents/example2.mp4')
+        self.video.setPaths()
+        self.assertEqual(self.video.getVideoName(), 'example2.mp4')
 
     def testPath(self):
         self.assertEqual(self.video.getVideoPath(), '/home/victorhugomoura/Documents')
+        self.video.setVideoFile('/home/victorhugomoura/Downloads/example.mp4')
+        self.video.setPaths()
+        self.assertEqual(self.video.getVideoPath(), '/home/victorhugomoura/Downloads')
 
     def testEmpty(self):
         self.assertFalse(self.video.isEmpty())
