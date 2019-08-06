@@ -57,21 +57,9 @@ fprintf('%sGetting ''%s'' details...\n', log_line_prefix, experiment);
 cfg = SemanticSequenceLibrary.GetFFExperimentDetails(video_dir, experiment, algorithm, required_speedup, skip_video_output);
 
 startInd = cfg.get('startInd');
-
-[~, fname, ~] = fileparts(cfg.get('inputVideoFileName'));
-
-if startInd == -1
-	file = [video_dir '/' experiment];
-	reader = VideoReader(file);
-	cfg.set('startInd', 1);
-	cfg.set('endInd', reader.NumberOfFrames);
-	cfg.set('inputVideoFileName', fullfile(video_dir,experiment));
-	[~, fname, ~] = fileparts(cfg.get('inputVideoFileName'));
-	cfg.set('ExpName', fname);
-
-startInd = cfg.get('startInd');
 endInd = cfg.get('endInd');
 
+[~, fname, ~] = fileparts(cfg.get('inputVideoFileName'));
 
 % Load the video .mat file
 fpstereo = [video_dir '/' fname 'fpstereo.mat'];

@@ -3,202 +3,193 @@ import os
 from subprocess import Popen, PIPE, STDOUT
 
 class InputError(Exception):
-	def __init__(self, msg):
-		self.msg = msg
-	def __str__(self):
-		return repr(self.msg)
+    def __init__(self, msg):
+        self.msg = msg
+    def __str__(self):
+        return str(self.msg)
 
 class SemanticHyperlapse(object):
-	def __init__(self):
-		self.video = None
-		self.path = ""
-		self.velocity = 0
-		self.maxVel = 0
-		self.lambdas = []
-		self.alpha = []
-		self.beta = []
-		self.gama = []
-		self.eta = []
+    def __init__(self):
+        self.video = None
+        self.path = ''
+        self.velocity = 0
+        self.maxVel = 0
+        self.alpha = []
+        self.beta = []
+        self.gama = []
+        self.eta = []
 
-	def getVideo(self):
-		return self.video
+    def getVideo(self):
+        return self.video
 
-	def setVideo(self, video):
-		self.video = video
+    def setVideo(self, video):
+        self.video = video
 
-	def getPath(self):
-		return self.path
+    def getPath(self):
+        return self.path
 
-	def setPath(self, path):
-		self.path = path
+    def setPath(self, path):
+        self.path = path
 
-	def getVelocity(self):
-		return self.velocity
+    def getVelocity(self):
+        return self.velocity
 
-	def setVelocity(self, velocity):
-		if self.isEmpty(velocity):
-			raise InputError("Please insert speedup first")
-		try:
-			self.checkAndSetVelocity(velocity)
-		except ValueError:
-			raise InputError("Invalid speedup value")
-			
-	def getMaxVel(self):
-		return self.maxVel
+    def setVelocity(self, velocity):
+        if self.isEmpty(velocity):
+            raise InputError('Please insert speedup first')
+        try:
+            self.checkAndSetVelocity(velocity)
+        except ValueError:
+            raise InputError('Invalid speedup value')
+            
+    def getMaxVel(self):
+        return self.maxVel
 
-	def setMaxVel(self, maxVel):
-		self.maxVel = maxVel
+    def setMaxVel(self, maxVel):
+        self.maxVel = maxVel
 
-	def getLambdas(self):
-		return self.lambdas
+    def getAlpha(self):
+        return self.alpha
 
-	def setLambdas(self, lambdas):
-		self.lambdas = lambdas
+    def setAlpha(self, alpha):
+        self.alpha = self.checkAndSetWeights(alpha)
+        
+    def getBeta(self):
+        return self.beta
 
-	def getAlpha(self):
-		return self.alpha
+    def setBeta(self, beta):
+        self.beta = self.checkAndSetWeights(beta)
 
-	def setAlpha(self, alpha):
-		self.alpha = self.checkWeights(alpha)
-		
-	def getBeta(self):
-		return self.beta
+    def getGama(self):
+        return self.gama
 
-	def setBeta(self, beta):
-		self.beta = self.checkWeights(beta)
+    def setGama(self, gama):
+        self.gama = self.checkAndSetWeights(gama)
 
-	def getGama(self):
-		return self.gama
+    def getEta(self):
+        return self.eta
 
-	def setGama(self, gama):
-		self.gama = self.checkWeights(gama)
+    def setEta(self, eta):
+        self.eta = self.checkAndSetWeights(eta)
 
-	def getEta(self):
-		return self.eta
+    def setPaths(self):
+        self.setPath(os.getcwd()) #get project path 
+        self.video.setPaths()
 
-	def setEta(self, eta):
-		self.eta = self.checkWeights(eta)
+    def checkAndSetVelocity(self, velocity):
+        velocity = float(int(velocity))
+        if velocity <= 1:
+            raise InputError('Error: speedup <= 1')
+        self.velocity = velocity
+    
+    def isEmpty(self, inputText):
+        if inputText == '':
+            return True
+        return False
 
-	def setPaths(self):
-		self.setPath(os.getcwd()) #get project path 
-		self.video.setPaths()
+    def checkAndSetWeights(self, weights):
+        try:
+            return self.convertWeights(weights)
+        except ValueError:
+            raise InputError('Please fill correctly all weights inputs')
 
-	def checkAndSetVelocity(self, velocity):
-		velocity = float(int(velocity))
-		if velocity <= 1:
-			raise InputError("Error: speedup <= 1")
-		self.velocity = velocity
-	
-	def isEmpty(self, inputText):
-		if inputText == "":
-			return True
-		return False
+    def convertWeights(self, weights):
+        for i in range(len(weights)):
+            weights[i] = int(weights[i])	#if it isn't a number, it'll raises a ValueError
+        return weights
 
-	def checkAndSetWeights(self, weights):
-		for i in range(len(weights)):
-			weights[i] = int(weights[i])
-		return weights
+    def opticalFlowCommand(self):
+        videoFile = self.correctPath(self.video.getVideoFile())
+        command = './optflow'
+        videoParam = ' -v ' + videoFile
+        configParam = ' -c default-config.xml'
+        outputParam = ' -o ' + videoFile[:-4] + '.csv'
 
-	def checkWeights(self, weights):
-		try:
-			return self.checkAndSetWeights(weights)
-		except ValueError:
-			raise InputError('Please fill correctly all weights inputs')
+        fullCommand = command + videoParam + configParam + outputParam		
+        
+        return fullCommand
 
-	def opticalFlowCommand(self):
-		videoFile = self.correctPath(self.video.getVideoFile())
-		command = "./optflow"
-		videoParam = " -v " + videoFile
-		configParam = " -c default-config.xml"
-		outputParam = " -o " + videoFile[:-4] + ".csv"
+    def runOpticalFlow(self):
+        os.chdir('../Vid2OpticalFlowCSV')
 
-		fullCommand = command + videoParam + configParam + outputParam		
-		
-		return fullCommand
-
-	def runOpticalFlow(self):
-		os.chdir("../Vid2OpticalFlowCSV")
-
-		os.system(self.opticalFlowCommand())
-		
-		os.chdir(self.getPath())
+        os.system(self.opticalFlowCommand())
+        
+        os.chdir(self.getPath())
 
 
-	def runMatlabSemanticInfo(self, eng):
-		videoFile = self.video.getVideoFile()
-		extractionFile = videoFile[:-4] + "_face_extracted.mat"
+    def runMatlabSemanticInfo(self, eng):
+        videoFile = self.video.getVideoFile()
+        extractionFile = videoFile[:-4] + '_face_extracted.mat'
 
-		eng.ExtractAndSave(videoFile, nargout=0)
-		(aux, nonSemanticFrames, semanticFrames) = eng.GetSemanticRanges(extractionFile, nargout=3)
+        eng.ExtractAndSave(videoFile, nargout=0)
+        (aux, nonSemanticFrames, semanticFrames) = eng.GetSemanticRanges(extractionFile, nargout=3)
 
-		return (float(nonSemanticFrames), float(semanticFrames))
+        return (float(nonSemanticFrames), float(semanticFrames))
 
-	def getSemanticInfo(self, eng):
-		eng.cd("SemanticScripts")
-		eng.addpath(self.video.getVideoPath())
-		eng.addpath(os.getcwd())
-		
-		nonSemanticFrames, semanticFrames = self.runMatlabSemanticInfo(eng)
-		
-		eng.cd(self.getPath())
-		return (nonSemanticFrames, semanticFrames)
+    def getSemanticInfo(self, eng):
+        eng.cd('SemanticScripts')
+        eng.addpath(self.video.getVideoPath())
+        eng.addpath(os.getcwd())
+        
+        nonSemanticFrames, semanticFrames = self.runMatlabSemanticInfo(eng)
+        
+        eng.cd(self.getPath())
+        return (nonSemanticFrames, semanticFrames)
 
-	def speedUp(self, eng, tns, ts):
-		eng.addpath(os.getcwd())
+    def speedUp(self, eng, nonSemanticFrames, semanticFrames):
+        eng.addpath(os.getcwd())
+        eng.addpath('Util')
+    
+        alpha = matlab.double([self.getAlpha()])
+        beta = matlab.double([self.getBeta()])
+        gama = matlab.double([self.getGama()])
+        eta = matlab.double([self.getEta()])
+    
+        (ss, sns) = eng.FindingBestSpeedups(nonSemanticFrames, semanticFrames,
+                                            self.getVelocity(), True, nargout=2)
+            
+        eng.SpeedupVideo(self.video.getVideoPath(), self.video.getVideoName(), ss, sns, 
+                        alpha, beta, gama, eta, 'Speedup', self.getVelocity(), nargout=0)
 
-		lambda1 = self.getLambdas()[0]
-		lambda2 = self.getLambdas()[1]
-	
-		alpha = matlab.double([self.getAlpha()])
-		beta = matlab.double([self.getBeta()])
-		gama = matlab.double([self.getGama()])
-		eta = matlab.double([self.getEta()])
+    def checkVideoInput(self):
+        if self.getVideo().isEmpty():
+            raise InputError('Please insert input video first')
 
-		(ss, sns) = eng.SpeedupOptimization(tns, ts, self.getVelocity(), self.getMaxVel(), lambda1, lambda2, nargout=2)
-			
-		eng.SpeedupVideo(self.video.getVideoPath(), self.video.getVideoName(), ss, sns, alpha,
-			beta, gama, eta, nargout=0)
+        if self.getVideo().isInvalid():
+            raise InputError('Video format invalid.\nValid formats: mp4, avi')
 
-	def checkVideoInput(self, video):
-		if self.isEmpty(video):
-				raise InputError("Please insert input video first")
+    def setup(self, inputSpeedUp, alphaInput, betaInput, gamaInput, etaInput):	
+        self.checkVideoInput()
 
-		if video[-3:] not in ['mp4', 'avi']:
-			raise InputError("Video format invalid.\nValid formats: mp4, avi")
+        self.setVelocity(inputSpeedUp)
+        self.setMaxVel(self.getVelocity() * 10.0)
 
-	def setup(self, inputSpeedUp, alphaInput, betaInput, gamaInput, etaInput):	
-		self.checkVideoInput(self.video.getVideoFile())
+        self.setAlpha(alphaInput)
+        self.setBeta(betaInput)
+        self.setGama(gamaInput)
+        self.setEta(etaInput)
 
-		self.setVelocity(inputSpeedUp)
-		self.setMaxVel(self.getVelocity() * 10.0)
-		self.setLambdas([1.0, float(round(40/self.getVelocity()))])
+    def run(self, writeFunction):
+        function = writeFunction
+        
+        function('1/5 - Running Optical Flow\n', 'title')
+        self.runOpticalFlow()
+    
+        function('2/5 - Starting Matlab\n', 'title')
+        eng = matlab.engine.start_matlab('-nodisplay')
+    
+        function('3/5 - Getting Semantic Info\n', 'title')
+        (nonSemanticFrames, semanticFrames) = self.getSemanticInfo(eng)
 
-		self.setAlpha(alphaInput)
-		self.setBeta(betaInput)
-		self.setGama(gamaInput)
-		self.setEta(etaInput)
+        function('4/5 - Speeding-Up Video\n', 'title')
+        self.speedUp(eng, nonSemanticFrames, semanticFrames)
+        eng.quit()
+    
+        function('5/5 - Finished\n', 'title')
 
-	def run(self, writeFunction):
-		function = writeFunction
-		
-		function("1/5 - Running Optical Flow\n", 'title')
-		self.runOpticalFlow()
-	
-		function("2/5 - Starting Matlab\n", 'title')
-		eng = matlab.engine.start_matlab("-nodisplay")
-	
-		function("3/5 - Getting Semantic Info\n", 'title')
-		(tns, ts) = self.getSemanticInfo(eng)
-
-		function("4/5 - Speeding-Up Video\n", 'title')
-		self.speedUp(eng, tns, ts)
-		eng.quit()
-	
-		function("5/5 - Finished\n", 'title')
-
-	def correctPath(self, path):
-		splittedPath = path.split(' ')
-		finalPath = ''
-		for i in splittedPath:
-			finalPath += (i + '\ ')
-		return finalPath[:-2]
+    def correctPath(self, path):
+        splittedPath = path.split(' ')
+        finalPath = ''
+        for i in splittedPath:
+            finalPath += (i + '\ ')
+        return finalPath[:-2]

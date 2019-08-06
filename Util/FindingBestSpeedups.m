@@ -1,4 +1,8 @@
-function [Ss , Sns ] = FindingBestSpeedups( Tns, Ts, speedup )
+function [Ss , Sns ] = FindingBestSpeedups(Tns, Ts, speedup, getFirstSpeedUp)
+
+    if ~exist('getFirstSpeedUp', 'var')
+        getFirstSpeedUp = false;
+    end
 
     A = [];
     epsilon = 0.5;
@@ -23,21 +27,24 @@ function [Ss , Sns ] = FindingBestSpeedups( Tns, Ts, speedup )
         A = [10; 10; 10; 10; 1; 1];
     end
     
-    printSolutions(A);   
-    
-    prompt = 'Choose one of the options above:\n Option ';
-    user_choice = input(prompt);
-    loop = 1;
-    while (loop)
+    if ~getFirstSpeedUp
+    	printSolutions(A);   
+        prompt = 'Choose one of the options above:\n Option ';
+        user_choice = input(prompt);
+        loop = 1;
+        while (loop)
 
-        if ( user_choice > size(A,2) || user_choice <= 0 )
-            fprintf('\nInvalid Option!\n\n');
-            printSolutions(A);
-            prompt = 'Choose one of the options above:\n Option ';
-            user_choice = input(prompt);
-        else 
-            loop = 0;
+            if ( user_choice > size(A,2) || user_choice <= 0 )
+                fprintf('\nInvalid Option!\n\n');
+                printSolutions(A);
+                prompt = 'Choose one of the options above:\n Option ';
+                user_choice = input(prompt);
+            else 
+                loop = 0;
+            end
         end
+    else
+        user_choice = 1;
     end
     Ss = A(1, user_choice);
     Sns = A(2, user_choice);

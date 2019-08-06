@@ -1,5 +1,12 @@
 ConfigWrapperIncrementalID.mat
+
+# Python Classes
 PythonScripts/autorun.pyc
 PythonScripts/hyperlapse.pyc
 PythonScripts/video.pyc
+
+# Test Coverage
+PythonScripts/.coverage
+PythonScripts/htmlcov
+
 .vscode/

@@ -95,17 +95,18 @@ classdef SemanticSequenceLibrary
                     startInd = 1;
                     endInd   = 884;
                     fps      = 30;
-		case 'Walking75'
-		    filename = 'Walking_75p.MP4';
-		    startInd = 1;
-		    endInd = 15484;
-		    fps = 30;
-		%% Video that will be setted later          
-		otherwise
-			filename = '';
-			startInd = -1;
-			endInd = -1;
-			fps = 0;
+                case 'Walking75'
+                    filename = 'Walking_75p.MP4';
+                    startInd = 1;
+                    endInd = 15484;
+                    fps = 30;
+                %% Personal video         
+                otherwise
+                    filename = exp_name;
+                    startInd = 1;
+                    reader = VideoReader(filename);
+                    endInd = reader.NumberOfFrames;
+                    fps = 30;
                     %% error(['ERROR: You have specified a non-existent experiment (' exp_name ')']);
             end
             
