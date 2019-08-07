@@ -98,6 +98,12 @@ class SemanticHyperlapse(object):
             weights[i] = int(weights[i])	#if it isn't a number, it'll raises a ValueError
         return weights
 
+    def opticalFlowExists(self):
+        videoFile = self.video.getVideoFile()
+        outputFile = videoFile[:-4] + '.csv'
+
+        return os.path.isfile(outputFile)
+
     def opticalFlowCommand(self):
         videoFile = self.correctPath(self.video.getVideoFile())
         command = './optflow'
@@ -110,9 +116,12 @@ class SemanticHyperlapse(object):
         return fullCommand
 
     def runOpticalFlow(self):
-        os.chdir('../Vid2OpticalFlowCSV')
+        os.chdir('Vid2OpticalFlowCSV')
 
-        os.system(self.opticalFlowCommand())
+        if not self.opticalFlowExists():
+            os.system(self.opticalFlowCommand())
+        else:
+            print 'OpticalFlow already extracted.'
         
         os.chdir(self.getPath())
 
