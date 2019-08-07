@@ -34,6 +34,6 @@ class Video(object):
         return False
 
     def isInvalid(self):
-        if self.getVideoFile()[-3:] not in ['mp4', 'avi']:
+        if self.getVideoFile()[-4:].lower() not in ['.mp4', '.avi']:
             return True
         return False
