@@ -44,7 +44,7 @@ If you don't want to read all the steps, feel free to use the **Quick Guide**. T
 
 1.  **Running the Code:**
 
-	Into the `PythonScripts` directory, run the following command:
+	Into the _PythonScripts_ directory, run the following command:
 ```
  user@computer:<project_path/PythonScripts>: python autorun.py
 ```
@@ -65,15 +65,17 @@ If you don't want to read all the steps, feel free to use the **Quick Guide**. T
 
 4. **Setting the Weights:**
 
-	4 weights control the way the video will be accelerated. They are:
-	| Weight | Description | Type |
-    |----------|---------------|-------|
-    | $$\alpha$$ | Tuple of weights related to the shakiness term in the edge weight formulation. | _Integer_ |
-    | $$\beta$$ | Tuple of weights related to the velocity term in the edge weight formulation. | _Integer_ |
-    | $$\gamma$$ | Tuple of weights related to the appearance term in the edge weight formulation. | _Integer_ |
-    | $$\eta$$ | Tuple of weights related to the semantic term in the edge weight formulation. | _Integer_ |
+    4 weights control the way the video will be accelerated. They are:
 	
-	Select an integer for each weight. The first is for the semantic part and the second one for the non-semantic part. If you don't change anything, the default weights will be used. _That doesn't mean that they are the best for your video._
+| Weight | Description | Type | 			
+|--------:|-------------|------|
+| &alpha; | Tuple of weights related to the shakiness term in the edge weight formulation. | _Integer_ |
+| &beta; | Tuple of weights related to the velocity term in the edge weight formulation. | _Integer_ |
+| &gamma; | Tuple of weights related to the appearance term in the edge weight formulation. | _Integer_ |
+| &eta; | Tuple of weights related to the semantic term in the edge weight formulation. | _Integer_ |
+	
+Select an integer for each weight. The first is for the semantic part and the second one for the non-semantic part. If you don't change anything, the default weights will be used. _That doesn't mean that they are the best for your video._
+
 ```
  The general formula is presented in the paper.
 ```
