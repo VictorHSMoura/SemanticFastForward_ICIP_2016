@@ -1,4 +1,6 @@
 
+
+  
 [![Version](https://img.shields.io/badge/version-1.0-brightgreen.svg)](http://www.verlab.dcc.ufmg.br/fast-forward-video-based-on-semantic-extraction/#ICIP2016)
 [![License](https://img.shields.io/badge/license-GPL--3.0-blue.svg)](LICENSE)
 
@@ -27,18 +29,23 @@ Belo Horizonte - Minas Gerais -Brazil
 
 ![VeRLab](https://www.dcc.ufmg.br/dcc/sites/default/files/public/verlab-logo.png)
 
-**VeRLab:** Laboratory of Computer Vison and Robotics  
+**VeRLab:** Laboratory of Computer Vision and Robotics  
 http://www.verlab.dcc.ufmg.br
 
 ## Code ##
 
 ### Dependencies ###
 
-* MATALB 2015a or higher
+* MATLAB 2015a or higher
 
-### Usage ###
 
- * The project processing is decribed by the following flowchart:
+### **1. I just want to speed-up my video!** ###
+Just follow the steps in  [PythonScripts](PythonScripts) folder.
+
+### **2. I want to speed-up my video and see the process!** ###
+
+#### Usage ####
+ * The project processing is described by the following flowchart:
 
 ![Flowchart](https://user-images.githubusercontent.com/23279754/28940022-a0c40a3e-7869-11e7-94e4-de155e4abfbe.jpg)
 
@@ -46,12 +53,11 @@ http://www.verlab.dcc.ufmg.br
 
     The first step processing is to estimate the Optical Flow of the Input Video. 
 
-    1. First, you should download the [Poleg et al. 2014](http://www.cs.huji.ac.il/~peleg/papers/cvpr14-egoseg.pdf) Flow Estimator code from the [link](http://www.vision.huji.ac.il/egoseg/EgoSeg1.2.zip).
-    2. Navigate to the download folder and unzip the code.
-    3. Into the Vid2OpticalFlowCSV\Example folder, run the command:
+    1. First, you should go to the _Vid2OpticalFlowCSV_ folder.
+    2. Into the _Vid2OpticalFlowCSV_ folder, run the command:
 
 ```
-Vid2OpticalFlowCSV.exe -v < video_filename > -c < config.xml > -o < output_filename.csv >
+./optflow -v < video_filename > -c < config.xml > -o < output_filename.csv >
 ```
 
 | Options | Description | Type | Example | 			
@@ -60,11 +66,11 @@ Vid2OpticalFlowCSV.exe -v < video_filename > -c < config.xml > -o < output_filen
 | ` < config.xml > ` | Path to the configuration XML file. | _String_ | `../default-config.xml` |
 | ` < output_filename.csv > ` | Path to save the output CSV file. | _String_ | `myVideo.csv` |
 
-    Save the file using the same same name of the video file with extension ".csv".
+    Save the file using the same name of the video file with the extension ".csv".
 
 2. **Semantic Extractor:**
 
-    The second step is to extract the semantic information over all frames of the Input video and save it in a CSV file. On the MATLAB console, go to the project folder and run the command:
+    The second step is to extract the semantic information over all frames of the input video and save it in a CSV file. On the MATLAB console, go to the _SemanticScripts_ folder and run the command:
 
 ```matlab
 >> ExtractAndSave(< Video_filename >)
@@ -148,7 +154,7 @@ function [videoFile, startInd, endInd, filename, fps] = GetVideoDetails(video_di
 
 If you are using it for academic purposes, please cite: 
 
-W. L. S. Ramos, M. M. Silva, , M. F. M. Campos, E. R. Nascimento, **Fast-forward video based on semantic extraction**, in: -_IEEE International Conference on Image Processing_, Phoenix, AZ, 2016, pp. 3334-3338. doi:10.1109/ICIP.2016.7532977.
+W. L. S. Ramos, M. M. Silva, M. F. M. Campos, E. R. Nascimento, **Fast-forward video based on semantic extraction**, in: -_IEEE International Conference on Image Processing_, Phoenix, AZ, 2016, pp. 3334-3338. doi:10.1109/ICIP.2016.7532977.
 
 ### Bibtex entry ###
 
@@ -164,4 +170,3 @@ W. L. S. Ramos, M. M. Silva, , M. F. M. Campos, E. R. Nascimento, **Fast-forward
 > }  
 
 #### Enjoy it. ####
-
